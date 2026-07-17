@@ -41,11 +41,11 @@ export default function TopBar({ onMenuClick }) {
           )}
         </button>
         <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}>
-          {currentUser.name[0].toUpperCase()}
+          {currentUser ?   currentUser.name[0].toUpperCase() : "A"}
         </div>
        
       </div>
-       <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}> ({currentUser.role})</p>
+       <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}> ({currentUser ? currentUser.role : "Admin"})</p>
     </header>
   );
 }
