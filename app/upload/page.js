@@ -11,23 +11,35 @@ export default function UploadPage() {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = async (event) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+event.preventDefault();
+    const file = fileInputRef.current.files?.[0];
+    //event.target.files?.[0];
+   /*  if (file && file.type.startsWith("image/")) {
       setPreviewUrl(URL.createObjectURL(file));
       setUploadedBlob(null);
-      setIsUploading(true);
+      setIsUploading(true); */
       try {
-        const newBlob = await upload(file.name, file, {
+       /*  const newBlob = await upload(file.name, file, {
           access: "public",
           handleUploadUrl: "/api/uploads",
-        });
+        }); */
+        const response = await fetch(
+            `/api/uploads?filename=${file.name}`,
+            {
+              method: 'POST',
+              body: file,
+            },
+          );
+ 
+          const newBlob = await response.json();
+
         setUploadedBlob(newBlob);
       } catch (error) {
         alert("Error: " + error);
       } finally {
         setIsUploading(false);
       }
-    }
+   // }
   };
 
   return (

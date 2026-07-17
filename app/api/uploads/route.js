@@ -1,9 +1,9 @@
-import { handleUpload } from "@vercel/blob/client";
+import { handleUpload,put } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const body = await request.text();
+    /* const body = await request.text();
     const response = await handleUpload({
       body,
       request,
@@ -21,9 +21,16 @@ export async function POST(request) {
       onUploadCompleted: async ({ blob }) => {
         console.log("uploaded:", blob.url);
       },
-    });
+    }); */
 
-    return NextResponse.json(response);
+const { searchParams } = new URL(request.url);
+  const filename = searchParams.get('filename');
+ 
+  const blob = await put(filename, request.body, {
+    access: 'public' /* or 'public' */,
+    addRandomSuffix: true,
+  });
+    return NextResponse.json(blob);
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: err.message }, { status: 500 });
