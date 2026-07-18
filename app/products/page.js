@@ -12,7 +12,7 @@ import { auth } from "@/lib/firebase";
 
 function ProductModal({ product, onSave, onClose, disable }) {
   const [form, setForm] = useState({
-   
+    id: product?.id ?? null,
     name: product?.name ?? "",
     category: product?.category ?? "Bags",
     price: product?.price ?? 0,
@@ -68,6 +68,7 @@ function ProductModal({ product, onSave, onClose, disable }) {
             <img src={form.image} alt="preview" className="w-full h-40 object-cover rounded-2xl" />
           )}
           <Field label="Product Name">
+          <p>{"Product ID:" +form.id}</p>
             <input disabled={disable} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Chunky Knit Tote Bag" className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
               style={{ background: "var(--secondary)", color: "var(--foreground)" }} />
@@ -172,7 +173,10 @@ export default function ProductsPage() {
 
   async function saveProduct(formData) {
     if (modal === "add") {
-      await addDoc(collection(db, "products"), {
+      const docref = doc(collection(db, "products"));
+      formData.id = docref.id;
+      alert(formData.id +"  the form data is"+formData.name);
+      await setDoc(docref, {
         ...formData,
         rating: 5,
         reviews: 0,

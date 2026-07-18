@@ -11,6 +11,7 @@ export function DataProvider({ children }) {
   const [orders, setOrders] = useState([]);
   const [messages, setMessages] = useState([]);
   const [user,setUser] =useState([]);
+  const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
@@ -25,12 +26,16 @@ export function DataProvider({ children }) {
     const userUnsub = onSnapshot(collection(db, "users"), (snap) => {
       setUser(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
+    const conversations = onSnapshot(collection(db, "conversations"), (snap) => {
+      setConversations(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    });
 
     return () => {
       unsub();
       ordUnsub();
       msgUnsub();
       userUnsub();
+      conversations();  
     };
   }, []);
 
@@ -54,6 +59,8 @@ export function DataProvider({ children }) {
         totalUnread,
         user,
         setUser,
+        conversations,
+        setConversations,
       }}
     >
       {children}

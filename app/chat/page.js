@@ -3,18 +3,23 @@
 import { useState, useRef, useEffect } from "react";
 import { useData } from "@/lib/data-context";
 import { Search, MessageCircle, Send } from "lucide-react";
-
+import {auth} from '@/lib/firebase';
 export default function ChatPage() {
   const data = useData();
   const { messages, setMessages } = data;
+  const {conversations,setConversations} = data;
   const [active, setActive] = useState(null);
   const [input, setInput] = useState("");
   const endRef = useRef(null);
-
+  const currentUserId = auth.currentUser.uid;
+  const [conv,setConv] = useState([]);
+//const conv = conversations.filter((c)=> c.fi;)
   useEffect(() => {
     if (messages.length > 0 && !active) {
       setActive(messages[0]);
     }
+    const con = conversations.filter((c)=> c.participants.includes(currentUserId));
+    setConv(con);
   }, [messages, active]);
 
   useEffect(() => {
@@ -49,6 +54,7 @@ export default function ChatPage() {
           </div>
         </div>
          <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+        <p>{conv}</p>
           {messages.map((m) => (
             m.id &&
             <button key={m.id} onClick={() => { setActive(m); markRead(m.id); }}
@@ -70,7 +76,14 @@ export default function ChatPage() {
                 </span>
               )}
             </button> 
+           
          ))}
+        
+          {/* {conversations.map((conversation) => ( */}
+            
+       
+            
+         
         </div> 
       </div> 
 
