@@ -12,7 +12,7 @@ import { auth } from "@/lib/firebase";
 
 function ProductModal({ product, onSave, onClose, disable }) {
   const [form, setForm] = useState({
-    id: product?.id ?? "",
+   
     name: product?.name ?? "",
     category: product?.category ?? "Bags",
     price: product?.price ?? 0,
@@ -152,8 +152,15 @@ export default function ProductsPage() {
 
   async function deleteProduct(id) {
     if (!id) return alert("Product ID is required to delete a product.");
+ 
+  const result = confirm("Are you sure you want to delete this product?");
+  if(result){
     const docRef = doc(db, "products", id)
     await deleteDoc(docRef);
+  }else{
+    return;
+  }
+
   }
 
   async function toggleActive(id) {
