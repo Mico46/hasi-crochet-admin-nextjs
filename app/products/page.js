@@ -3,13 +3,12 @@
 import { useState, useRef } from "react";
 import { collection, addDoc, updateDoc, doc, setDoc,deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { upload } from "@vercel/blob/client";
-import { useData } from "@/lib/data-context";
-import { auth } from "@/lib/firebase";  
+import { useData } from "@/lib/data-context";  
 import { Search, Plus, Edit2, Trash2, Star, X,Eye } from "lucide-react";
 import Field from "@/components/Field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { auth } from "@/lib/firebase";
 
 function ProductModal({ product, onSave, onClose, disable }) {
   const [form, setForm] = useState({
@@ -35,14 +34,18 @@ function ProductModal({ product, onSave, onClose, disable }) {
       setPreviewUrl(URL.createObjectURL(file));
       setUploadedBlob(null);
       try {
-        const newBlob = await upload(file.name, file, {
-          access: "public",
-          handleUploadUrl: "/api/uploads",
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await fetch("/api/uploads", {
+          method: "POST",
+          body: formData,
         });
-        setForm((prev) => ({ ...prev, image: newBlob.url }));
-        setUploadedBlob(newBlob);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Upload failed");
+        setForm((prev) => ({ ...prev, image: data.url }));
+        setUploadedBlob(data);
       } catch (error) {
-        alert("Error: " + error);
+        alert("Error: " + error.message);
       }
     }
   };

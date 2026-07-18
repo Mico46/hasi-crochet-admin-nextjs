@@ -1,38 +1,23 @@
-import { handleUpload,put } from "@vercel/blob/client";
+import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    /* const body = await request.text();
-    const response = await handleUpload({
-      body,
-      request,
-      onBeforeGenerateToken: async () => {
-        return {
-          allowedContentTypes: [
-            "image/jpeg",
-            "image/png",
-            "image/webp",
-            "application/pdf",
-          ],
-          addRandomSuffix: true,
-        };
-      },
-      onUploadCompleted: async ({ blob }) => {
-        console.log("uploaded:", blob.url);
-      },
-    }); */
+    const formData = await request.formData();
+    const file = formData.get("file");
 
-const { searchParams } = new URL(request.url);
-  const filename = searchParams.get('filename');
- 
-  const blob = await put(filename, request.body, {
-    access: 'public' /* or 'public' */,
-    addRandomSuffix: true,
-  });
+    if (!file) {
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    const blob = await put(`uploads/${file.name}`, file, {
+      access: "public",
+      addRandomSuffix: true,
+    });
+
     return NextResponse.json(blob);
   } catch (err) {
-    console.error(err);
+    console.error("Upload error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

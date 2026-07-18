@@ -1,45 +1,43 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { upload } from "@vercel/blob/client";
 import { Plus } from "lucide-react";
 
 export default function UploadPage() {
   const fileInputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [uploadedBlob, setUploadedBlob] = useState(null);
+  const [uploadedUrl, setUploadedUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = async (event) => {
-event.preventDefault();
-    const file = fileInputRef.current.files?.[0];
-    //event.target.files?.[0];
-   /*  if (file && file.type.startsWith("image/")) {
-      setPreviewUrl(URL.createObjectURL(file));
-      setUploadedBlob(null);
-      setIsUploading(true); */
-      try {
-       /*  const newBlob = await upload(file.name, file, {
-          access: "public",
-          handleUploadUrl: "/api/uploads",
-        }); */
-        const response = await fetch(
-            `/api/uploads?filename=${file.name}`,
-            {
-              method: 'POST',
-              body: file,
-            },
-          );
- 
-          const newBlob = await response.json();
+    const file = event.target.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
 
-        setUploadedBlob(newBlob);
-      } catch (error) {
-        alert("Error: " + error);
-      } finally {
-        setIsUploading(false);
+    setPreviewUrl(URL.createObjectURL(file));
+    setUploadedUrl("");
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/uploads", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Upload failed");
       }
-   // }
+
+      setUploadedUrl(data.url);
+    } catch (error) {
+      alert("Upload error: " + error.message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -60,7 +58,12 @@ event.preventDefault();
             <Plus size={20} style={{ color: "var(--primary)" }} />
           </button>
         )}
-        {uploadedBlob && <p className="text-sm break-all" style={{ color: "var(--foreground)" }}>{uploadedBlob.url}</p>}
+        {isUploading && (
+          <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>Uploading...</p>
+        )}
+        {uploadedUrl && (
+          <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{uploadedUrl}</p>
+        )}
       </div>
     </div>
   );
