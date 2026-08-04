@@ -168,10 +168,15 @@ export default function ProductsPage() {
     const product = products.find((p) => p.id === id);
     if (product) {
       const docRef = doc(db, "products", id);
-      const isActive = product.active;
-      console.log(isActive);
-      
-      await updateDoc(docRef, { isActive: !isActive });
+      const isActive = product.isActive;
+      try { 
+        await setDoc(docRef, { isActive: !isActive }, { merge: true });
+      } catch (error) {
+        console.log(error);
+        alert(error.message);
+      }
+    } else {
+      alert("Product not found");
     }
   }
 
@@ -179,7 +184,7 @@ export default function ProductsPage() {
     if (modal === "add") {
       const docref = doc(collection(db, "products"));
       formData.id = docref.id;
-      alert(formData.id +"  the form data is"+formData.name);
+     // alert(formData.id +"  the form data is"+formData.name);
       await setDoc(docref, {
         ...formData,
         rating: 5,
@@ -283,7 +288,7 @@ export default function ProductsPage() {
                 <button onClick={() => toggleActive(p.id)}
                   className="text-xs font-medium px-2.5 py-1 rounded-full transition-all"
                   style={p.isActive ? { background: "#dcfce7", color: "#16a34a" } : { background: "var(--muted)", color: "var(--muted-foreground)" }}>
-                  {p.active ? "Active" : "Inactive"}
+                  {p.isActive ? "Active" : "Inactive"}
                 </button>
               </div>
             </div>
