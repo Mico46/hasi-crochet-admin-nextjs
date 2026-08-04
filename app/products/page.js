@@ -167,7 +167,11 @@ export default function ProductsPage() {
   async function toggleActive(id) {
     const product = products.find((p) => p.id === id);
     if (product) {
-      await updateDoc(doc(db, "products", id), { active: !product.active });
+      const docRef = doc(db, "products", id);
+      const isActive = product.active;
+      console.log(isActive);
+      
+      await updateDoc(docRef, { isActive: !isActive });
     }
   }
 
