@@ -15,7 +15,7 @@ export async function POST(request) {
       addRandomSuffix: true,
     });
 
-    return NextResponse.json(blob);
+    return NextResponse.json(blob,{status:200,headers:{"Content-Type":"text/plain"}});
   } catch (err) {
     console.error("Upload error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });

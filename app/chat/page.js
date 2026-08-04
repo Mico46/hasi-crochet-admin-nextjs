@@ -71,13 +71,14 @@ const senderId = currentUserId;
         'lastMessageTime': timestamp,
         'lastSenderId': senderId,
       }); 
-     // const updated = active.messages.concat(messageData);
-
-      /* .map((m) =>
+      const updated =  conversationsUser.map((m) =>
         m.id === active.id
-          ? { ...m, lastMessage: input, lastMessageTime: timestamp, lastSenderId: senderId }
+          ? { ...m, lastMessage: input, lastMessageTime: timestamp.toDateString(), lastSenderId: senderId }
           : m
-      ); */
+      ); 
+      setConv(updated);
+      selectConversation(updated.find((m) => m.id === active.id));
+      //setActive(updated.find((m) => m.id === active.id) ?? null);
       /* alert(JSON.stringify(active.map((m)=>
         m.id === active.id ? { ...m, messages: updated } : m
       ))); */
@@ -168,7 +169,7 @@ const senderId = currentUserId;
             </button>
           )) */}
           <p>Conversations:</p>
-          {conversationsUser.map((m) => (
+          {conv.map((m) => (
            
             <button
               key={m.docId}
