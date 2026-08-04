@@ -82,7 +82,11 @@ export default function PrivacyPolicy() {
               If you have any questions or concerns regarding this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2 font-medium text-gray-900">
-              support@example.com
+             tex.mic22@gmail.com
+            </p>
+            <p className="mt-2 font-medium text-gray-900">
+            Michael Samson
+            +251912469372
             </p>
           </section>
         </div>
