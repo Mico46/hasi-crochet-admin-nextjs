@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file");
+    const file = formData.get("file") || formData.get("image");
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -15,7 +15,7 @@ export async function POST(request) {
       addRandomSuffix: true,
     });
 
-    return NextResponse.json(blob,{status:200,headers:{"Content-Type":"text/plain"}});
+    return NextResponse.json(blob,{status:200});
   } catch (err) {
     console.error("Upload error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
