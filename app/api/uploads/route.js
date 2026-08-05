@@ -1,4 +1,4 @@
-import { put } from "@vercel/blob";
+import { put, list } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -21,6 +21,8 @@ export async function POST(request) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+
 
 export async function GET() {
   return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
