@@ -150,7 +150,7 @@ export default function ProductsPage() {
     return mCat && mSearch;
   });
   const currentUser = user.find((u) => u.email === auth.currentUser.email);
-
+const userRole = auth.currentUser.role;
   async function deleteProduct(id) {
     if (!id) return alert("Product ID is required to delete a product.");
  
@@ -248,7 +248,7 @@ export default function ProductsPage() {
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-black/60 text-white">Inactive</span>
                 </div>
               )}
-              <div className="absolute top-2 right-2 flex gap-1.5">
+             {userRole == currentUser.id && <div className="absolute top-2 right-2 flex gap-1.5">
                 <button onClick={() => setViewProduct(p)} className="p-1.5 rounded-lg bg-white/90 hover:bg-white transition-colors">
                   <Eye size={13} style={{ color: "var(--foreground)" }} />
                 </button>
@@ -258,7 +258,7 @@ export default function ProductsPage() {
                 <button onClick={() => deleteProduct(p.id)} className="p-1.5 rounded-lg bg-white/90 hover:bg-white transition-colors">
                   <Trash2 size={13} style={{ color: "#dc2626" }} />
                 </button>
-              </div>
+              </div>}
               <div className="absolute bottom-2 left-2">
                 <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: "rgba(255,255,255,0.9)", color: "var(--foreground)" }}>
                   {p.category}

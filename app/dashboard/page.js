@@ -30,16 +30,16 @@ function toDate(timestamp) {
 export default function DashboardPage() {
   const data = useData();
   const router = useRouter();
-  const { products, orders, totalRevenue, pendingCount } = data;
+  const { products, orders, totalRevenue, pendingCount,user } = data;
 
   const activeProducts = products.filter((p) => p.active).length;
   const lowStock = products.filter((p) => p.stock > 0 && p.stock < 5).length;
-
+const totalCustomers = user.length;
   const stats = [
     { label: "Total Revenue", value: `Birr -${totalRevenue.toLocaleString()}`, sub: "+12% this month", icon: DollarSign, up: true },
     { label: "Orders", value: orders.length, sub: `${pendingCount} pending`, icon: ShoppingBag, up: true },
     { label: "Active Products", value: activeProducts, sub: `${lowStock} low stock`, icon: Package, up: false },
-    { label: "Customers", value: 142, sub: "+8 this week", icon: Users, up: true },
+    { label: "Customers", value: totalCustomers, sub: "+8 this week", icon: Users, up: true },
   ];
 
   const recent = orders.slice(0, 5);
