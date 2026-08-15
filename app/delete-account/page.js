@@ -21,7 +21,7 @@ import { auth } from "@/lib/firebase";
 export default function DeleteAccountPage() {
      const data = useData();
   
-  const { user, setUser } = data;
+ // const { user, setUser } = data;
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +54,7 @@ const { login } = useAuth();
       await deleteDoc(userDocRef);
 
       // 2. Delete Firebase Auth account
-      await deleteUser(user);
+      await deleteUser(users);
 
       // 3. Redirect after successful deletion
       router.push("/?message=account-deleted");
@@ -111,7 +111,7 @@ const { login } = useAuth();
         </div>
       )}
        <Button onClick={()=>checkAccount()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded disabled:opacity-50 transition-colors">Login</Button>
-{user ? <p>{user.name}</p> : <p>user not found</p>}
+{users ? <p>{users.name}</p> : <p>user not found</p>}
 <button
         onClick={handleDeleteAccount}
         disabled={loading}
