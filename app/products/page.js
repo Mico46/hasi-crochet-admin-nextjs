@@ -165,7 +165,10 @@ const userRole = profile.map((c)=>c.role);
   }
 
   }
+  function getImages(images){
 
+    return images[0];
+  }
   async function toggleActive(id) {
     const product = products.find((p) => p.id === id);
     if (product) {
@@ -241,9 +244,9 @@ const userRole = profile.map((c)=>c.role);
         {filtered.map((p) => (
           
           <div key={p.id} className="rounded-2xl overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-            <p></p>
+           {p.images && <p></p>}
             <div className="relative" style={{ height: 180 }}>
-              <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+              <img src={p.images ? getImages(p.images): p.image} alt={p.name} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent" />
               {!p.isActive && (
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center">

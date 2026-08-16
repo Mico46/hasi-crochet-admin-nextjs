@@ -15,11 +15,18 @@ const [filteredProducts, setFilteredProducts] = useState([]);
 
 const [blobs, setBlobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+ const images = new Set(
+   products
+        .map((p) =>  p.images)
+        .filter(Boolean)
+ )
 const dbImageUrls = new Set(
       products
-        .map((p) => p.image)
+        .map((p) =>  p.image)
         .filter(Boolean)
     );
+    
 const orphanUrls = [];
   useEffect(() => {
     async function fetchBlobs() {
@@ -73,7 +80,34 @@ const orphanUrls = [];
   };
 
   const getFilename = (url) => {
+    if(url == null){
+
+     // alert("empty url");
+      return;
+    }
     return url.split("/").pop();
+  }
+
+  const imagesRow = (images)=>{
+images.map((p,i)=>{
+ return  (
+      <tr key={`${i}-${p}`} className="border-b border-gray-200">
+          <td className="px-4 py-2">
+            <img className="w-10 h-10 object-cover rounded-lg" src={p} alt="Preview" />
+          </td>
+          
+           
+             <td className="px-4 py-2"><p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{p}</p></td>
+             
+           {/*  <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{product.image}</p> */}
+         
+          <td className="px-4 py-2">
+            <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{getFilename(p)}</p>
+          </td>
+        </tr> );
+})
+
+   
   }
 
   const deleteBlob = async (url) => {
@@ -127,18 +161,41 @@ const orphanUrls = [];
             </tr>
           </thead>
           <tbody>
-      {products.map((product) => (
-        <tr key={product.id} className="border-b border-gray-200">
+      {products != null && products.map((product) => (
+         product.images ? 
+        product.images.map((p,i)=>{
+      return  (
+      <tr key={`${i}-${p}`} className="border-b border-gray-200">
+          <td className="px-4 py-2">
+            <img className="w-10 h-10 object-cover rounded-lg" src={p} alt="Preview" />
+          </td>
+          
+           
+             <td className="px-4 py-2"><p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{p}</p></td>
+             
+           {/*  <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{product.image}</p> */}
+         
+          <td className="px-4 py-2">
+            <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{getFilename(p)}</p>
+          </td>
+        </tr> );
+ } )
+        : <tr key={product.id} className="border-b border-gray-200">
           <td className="px-4 py-2">
             <img className="w-10 h-10 object-cover rounded-lg" src={product.image} alt="Preview" />
           </td>
-          <td className="px-4 py-2">
-            <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{product.image}</p>
-          </td>
+          
+           
+            
+             <td className="px-4 py-2"><p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{product.image}</p></td>
+           {/*  <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{product.image}</p> */}
+         
           <td className="px-4 py-2">
             <p className="text-sm break-all max-w-md" style={{ color: "var(--accent)" }}>{getFilename(product.image)}</p>
           </td>
         </tr>
+
+      
       ))}
       </tbody>
       </table>
@@ -162,7 +219,7 @@ const orphanUrls = [];
             <tbody>
             {blobs.map((blob,i) => (
              !dbImageUrls.has(blob.url) &&  (
-             getFilename(blob.url) ? (
+             getFilename(blob.url) && images.has(blob.url) ? (
              <tr key={blob.url}>
                 <td className="px-2 py-2  text-left">{i+1}</td>
                 <td className="px-2 py-4 w-40  text-left">
@@ -183,8 +240,14 @@ const orphanUrls = [];
                   :null
                 }</td>
               </tr>
+
             ) : null
             )))}
+           <tr>
+              <td>
+                <p>{dbImageUrls[0]}</p>
+              </td>
+            </tr>
           </tbody>
           </table>
           </>
