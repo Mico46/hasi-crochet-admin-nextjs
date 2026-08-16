@@ -149,8 +149,10 @@ export default function ProductsPage() {
     const mSearch = p.name.toLowerCase().includes(search.toLowerCase());
     return mCat && mSearch;
   });
-  const currentUser = user.find((u) => u.email === auth.currentUser.email);
-const userRole = auth.currentUser.role;
+  const currentUser = user.find((u) => u.id === auth.currentUser.uid);
+  const profile = user.filter((u) => u.id == auth.currentUser.uid);
+const userRole = profile.map((c)=>c.role);
+
   async function deleteProduct(id) {
     if (!id) return alert("Product ID is required to delete a product.");
  
@@ -189,7 +191,7 @@ const userRole = auth.currentUser.role;
         ...formData,
         rating: 5,
         reviews: 0,
-        isActive: true,
+        isActive: userRole =="user" ? false: true,
         inStock: true,
         isFeatured: true,
         isNew: true,
@@ -239,7 +241,7 @@ const userRole = auth.currentUser.role;
         {filtered.map((p) => (
           
           <div key={p.id} className="rounded-2xl overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-            <p>{p.id}</p>
+            <p></p>
             <div className="relative" style={{ height: 180 }}>
               <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent" />
@@ -248,7 +250,7 @@ const userRole = auth.currentUser.role;
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-black/60 text-white">Inactive</span>
                 </div>
               )}
-             {userRole == currentUser.id && <div className="absolute top-2 right-2 flex gap-1.5">
+             {userRole == "Admin" || userRole == "admin" && <div className="absolute top-2 right-2 flex gap-1.5">
                 <button onClick={() => setViewProduct(p)} className="p-1.5 rounded-lg bg-white/90 hover:bg-white transition-colors">
                   <Eye size={13} style={{ color: "var(--foreground)" }} />
                 </button>
@@ -285,11 +287,11 @@ const userRole = auth.currentUser.role;
                     <span key={c} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--secondary)", color: "var(--muted-foreground)" }}>{c}</span>
                   ))}
                 </div>
-                <button onClick={() => toggleActive(p.id)}
+               {userRole =="Admin" || userRole == "admin" && <button onClick={() => toggleActive(p.id)}
                   className="text-xs font-medium px-2.5 py-1 rounded-full transition-all"
                   style={p.isActive ? { background: "#dcfce7", color: "#16a34a" } : { background: "var(--muted)", color: "var(--muted-foreground)" }}>
                   {p.isActive ? "Active" : "Inactive"}
-                </button>
+                </button>}
               </div>
             </div>
           </div>

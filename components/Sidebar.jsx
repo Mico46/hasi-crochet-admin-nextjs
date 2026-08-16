@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useData } from "@/lib/data-context";
 import { useAuth } from "@/lib/auth-context";
+import { auth } from "@/lib/firebase";
 
 export default function Sidebar({ open, onClose }) {
   const pathname = usePathname();
@@ -17,20 +18,37 @@ export default function Sidebar({ open, onClose }) {
   const { logout, user } = useAuth();
   const pendingCount = data?.pendingCount ?? 0;
   const totalUnread = data?.totalUnread ?? 0;
-
+  const users = data?.user;
+  const currentUser = users.find((u) => u.id === auth.currentUser.uid);
+  //const userRole =  "user";
+  const profile = users.filter((u) => u.id == user.uid);
+  const userRole = profile.map((p)=> p.role);
   async function handleLogout() {
     await logout();
     router.push("/login");
   }
 
-  const nav = [
+  const nav = userRole== "user" ?[
+    { id: "/products", label: "Products", icon: Package, badge: 0 },
+    { id: "/orders", label: "Orders", icon: ShoppingBag, badge: pendingCount },
+    { id: "/chat", label: "Messages", icon: MessageCircle, badge: totalUnread },
+    { id: "/settings", label: "Settings", icon: Settings, badge: 0 },
+  ]: [
     { id: "/dashboard", label: "Dashboard", icon: LayoutDashboard, badge: 0 },
     { id: "/products", label: "Products", icon: Package, badge: 0 },
     { id: "/orders", label: "Orders", icon: ShoppingBag, badge: pendingCount },
     { id: "/chat", label: "Messages", icon: MessageCircle, badge: totalUnread },
     { id: "/settings", label: "Settings", icon: Settings, badge: 0 },
     { id: "/upload", label: "Upload", icon: Package, badge: 0 },
+    { id: "/admin", label: "users", icon: Package, badge: 0 },
   ];
+
+  const userNav = [
+    { id: "/products", label: "Products", icon: Package, badge: 0 },
+    { id: "/orders", label: "Orders", icon: ShoppingBag, badge: pendingCount },
+    { id: "/chat", label: "Messages", icon: MessageCircle, badge: totalUnread },
+    { id: "/settings", label: "Settings", icon: Settings, badge: 0 },
+  ]
 
   return (
     <aside
@@ -51,10 +69,12 @@ export default function Sidebar({ open, onClose }) {
       </div>
 
       {/* Nav */}
+      
       <nav className="flex-1 px-3 py-4 space-y-1">
         <p className="text-xs font-semibold uppercase tracking-widest px-3 mb-3" style={{ color: "var(--muted-foreground)" }}>
           Menu
         </p>
+        <div>{profile.map((p)=>(<p key={p.id}>{p.name}</p>))} <p>{userRole}</p></div>
         {nav.map(({ id, label, icon: Icon, badge }) => {
           const active = pathname === id;
           return (
@@ -85,6 +105,7 @@ export default function Sidebar({ open, onClose }) {
           );
         })}
       </nav>
+
 
       {/* Profile */}
       <div className="px-3 py-4" style={{ borderTop: "1px solid var(--border)" }}>

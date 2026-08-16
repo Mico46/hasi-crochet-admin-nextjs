@@ -32,13 +32,14 @@ export default function DashboardPage() {
   const router = useRouter();
   const { products, orders, totalRevenue, pendingCount,user } = data;
 
-  const activeProducts = products.filter((p) => p.active).length;
+  const activeProducts = products.filter((p) => p.isActive).length;
   const lowStock = products.filter((p) => p.stock > 0 && p.stock < 5).length;
+  const inActive = products.filter((p) => p.isActive == false).length
 const totalCustomers = user.length;
   const stats = [
     { label: "Total Revenue", value: `Birr -${totalRevenue.toLocaleString()}`, sub: "+12% this month", icon: DollarSign, up: true },
     { label: "Orders", value: orders.length, sub: `${pendingCount} pending`, icon: ShoppingBag, up: true },
-    { label: "Active Products", value: activeProducts, sub: `${lowStock} low stock`, icon: Package, up: false },
+    { label: "Active Products", value: activeProducts, sub: `${inActive} InActive Product`, icon: Package, up: false },
     { label: "Customers", value: totalCustomers, sub: "+8 this week", icon: Users, up: true },
   ];
 
